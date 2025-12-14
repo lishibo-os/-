@@ -41,7 +41,7 @@ function PostDetail() {
   };
 
   const handleLike = async () => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !currentUser) {
       navigate('/login');
       return;
     }
@@ -54,7 +54,7 @@ function PostDetail() {
   };
 
   const handleFork = async () => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !currentUser) {
       navigate('/login');
       return;
     }
@@ -67,13 +67,14 @@ function PostDetail() {
   };
 
   const handleSave = async () => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !currentUser) {
       navigate('/login');
       return;
     }
     try {
-      await postService.savePost(id);
-      alert('收藏成功！');
+      const result = await postService.savePost(id);
+      // You could add a notification here instead of alert
+      console.log(result.message);
     } catch (error) {
       console.error('收藏失败:', error);
     }
@@ -81,7 +82,7 @@ function PostDetail() {
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !currentUser) {
       navigate('/login');
       return;
     }
