@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const authMiddleware = require('../middleware/auth');
+const { createLimiter } = require('../middleware/rateLimiter');
 const Category = require('../models/Category');
 
 // Get all categories
@@ -30,7 +31,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create category (protected route)
-router.post('/', authMiddleware, [
+router.post('/', authMiddleware, createLimiter, [
   body('name').trim().notEmpty().withMessage('请输入分类名称')
 ], async (req, res) => {
   try {

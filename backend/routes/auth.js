@@ -3,9 +3,10 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { authLimiter } = require('../middleware/rateLimiter');
 
 // Register
-router.post('/register', [
+router.post('/register', authLimiter, [
   body('username').trim().isLength({ min: 3, max: 30 }).withMessage('用户名需要3-30个字符'),
   body('email').isEmail().withMessage('请输入有效的邮箱地址'),
   body('password').isLength({ min: 6 }).withMessage('密码至少需要6个字符')
@@ -58,7 +59,7 @@ router.post('/register', [
 });
 
 // Login
-router.post('/login', [
+router.post('/login', authLimiter, [
   body('email').isEmail().withMessage('请输入有效的邮箱地址'),
   body('password').notEmpty().withMessage('请输入密码')
 ], async (req, res) => {

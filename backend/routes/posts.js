@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const authMiddleware = require('../middleware/auth');
+const { createLimiter } = require('../middleware/rateLimiter');
 const Post = require('../models/Post');
 const User = require('../models/User');
 
@@ -73,7 +74,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create post
-router.post('/', authMiddleware, [
+router.post('/', authMiddleware, createLimiter, [
   body('title').trim().notEmpty().withMessage('请输入标题'),
   body('content').trim().notEmpty().withMessage('请输入内容'),
   body('category').notEmpty().withMessage('请选择分类')

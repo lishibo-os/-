@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const authMiddleware = require('../middleware/auth');
+const { createLimiter } = require('../middleware/rateLimiter');
 const Comment = require('../models/Comment');
 
 // Get comments for a post
@@ -18,7 +19,7 @@ router.get('/post/:postId', async (req, res) => {
 });
 
 // Create comment
-router.post('/', authMiddleware, [
+router.post('/', authMiddleware, createLimiter, [
   body('content').trim().notEmpty().withMessage('请输入评论内容'),
   body('post').notEmpty().withMessage('文章ID不能为空')
 ], async (req, res) => {
